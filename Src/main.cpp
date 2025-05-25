@@ -36,6 +36,7 @@
 /* USER CODE BEGIN Includes */
 #include <cstdio>
 #include "LEDcpp.hpp"
+#include "AP_Scheduler.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -98,6 +99,13 @@ struct task {
     {TaskC, 200, 0, 200},
     {TaskD, 400, 0, 200}
 };
+
+// AP_Scheduler
+// Example setup
+Task ap_tasks[] = {
+    { 10, 10, 1000, "task1", TaskA },
+    { 20, 5, 1000, "task2", TaskB },
+};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -114,6 +122,8 @@ CLed led3(GPIOD, GPIO_PIN_13, 50);
 CLed led4(GPIOD, GPIO_PIN_12, 500);
 CLed led5(GPIOD, GPIO_PIN_14, 200);
 CLed led6(GPIOD, GPIO_PIN_15, 400);
+
+AP_Scheduler scheduler;
 /* USER CODE END 0 */
 uint8_t pd12_status;
 unsigned long time_usecond;
@@ -140,6 +150,7 @@ int main(void)
 	
   /* USER CODE BEGIN 2 */
 	Initial_System_Timer();
+	scheduler.init(ap_tasks, sizeof(ap_tasks) / sizeof(ap_tasks), 0);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -155,18 +166,19 @@ int main(void)
 			HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_14);
 			HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_15);*/
 			
-			printf("----------------------------------------\n");
+			//printf("----------------------------------------\n");
 			sample_time_us = AP_HAL_micro();    
-			fast_loop();
-			main_loop_tick++;
-			time_available = (sample_time_us + loop_period_us) - AP_HAL_micro();
-			printf("time available is: %lu [us]\n", time_available);
-			scheduler_run((unsigned int)time_available);
+//			fast_loop();
+//			main_loop_tick++;
+//			time_available = (sample_time_us + loop_period_us) - AP_HAL_micro();
+//			printf("time available is: %lu [us]\n", time_available);
+//			scheduler_run((unsigned int)time_available);
+				scheduler.loop();
 			time_usecond = AP_HAL_micro();
 			time_usecond -= start_time_usecond;
 			time_sec = (double)time_usecond/1000000;
-			printf ("Current tick = %lu microseconds\n", time_usecond);
-			printf ("Current tick = %lf seconds\n", time_sec);
+			//printf ("Current tick = %lu microseconds\n", time_usecond);
+			//printf ("Current tick = %lf seconds\n", time_sec);
     }
   /* USER CODE END 3 */
 

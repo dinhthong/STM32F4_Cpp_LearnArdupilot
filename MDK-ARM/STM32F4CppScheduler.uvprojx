@@ -493,6 +493,11 @@
               <FileType>1</FileType>
               <FilePath>..\Src\Retarget.c</FilePath>
             </File>
+            <File>
+              <FileName>AP_Scheduler.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Src\AP_Scheduler.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
