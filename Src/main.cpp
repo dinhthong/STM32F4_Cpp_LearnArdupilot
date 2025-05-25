@@ -55,6 +55,49 @@ void Initial_System_Timer(void)
 	TIM5->EGR = 0x0001;
 	TIM5->CR1 |= 0x0001; 
 }
+/* USER CODE BEGIN PV */
+/* Private variables ---------------------------------------------------------*/
+#define TASK_COUNT 4
+uint32_t u32_debug_vars[10];
+void TaskA(void) {
+    printf("Task A is running\n\r");
+		u32_debug_vars[0]++;
+}
+void TaskB(void) {
+		printf("Task B is running\n\r");
+		u32_debug_vars[1]++;
+    //usleep(500);
+}
+void TaskC(void) {
+		printf("Task C is running\n\r");
+		u32_debug_vars[2]++;
+    //usleep(1000);
+}
+void TaskD(void) {
+		printf("Task D is running\n\r");
+	   u32_debug_vars[3]++;
+}
+void fast_loop(void) {
+    printf("This is fast loop \n\r");
+		u32_debug_vars[4]++;
+}
+
+unsigned long get_us_tick(void);
+void scheduler_run(unsigned int t_available);
+unsigned int main_loop_tick = 0, loop_rate_hz = 400;
+unsigned long time_available, sample_time_us, loop_period_us;
+
+struct task {
+    void (*task_fnc)(void); //pointer to function
+    unsigned int task_rate_hz;
+    unsigned int last_run; // tick count for each task, used for ensuring task_rate_hz
+    unsigned int max_time_micros; // maximum execution time in microseconds.
+} task_list[]={
+    {TaskA, 50, 0 , 100},
+    {TaskB, 100, 0, 500},
+    {TaskC, 200, 0, 200},
+    {TaskD, 400, 0, 200}
+};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -62,9 +105,8 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 
 /* USER CODE BEGIN PFP */
-
 /* Private function prototypes -----------------------------------------------*/
-unsigned long get_us_tick(void);
+
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -74,7 +116,9 @@ CLed led5(GPIOD, GPIO_PIN_14, 200);
 CLed led6(GPIOD, GPIO_PIN_15, 400);
 /* USER CODE END 0 */
 uint8_t pd12_status;
-uint32_t u32_counter;
+unsigned long time_usecond;
+unsigned long start_time_usecond;
+double time_sec;
 int main(void)
 {
 
@@ -95,20 +139,35 @@ int main(void)
 	GPIO gpio_d12(GPIO_PIN_12);
 	
   /* USER CODE BEGIN 2 */
-
+	Initial_System_Timer();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-  /* USER CODE END WHILE */
-		pd12_status = gpio_d12.read();
-  /* USER CODE BEGIN 3 */
-		u32_counter++;
-		printf("Counter value is: %d\n", u32_counter);
-		HAL_Delay(500);  //delay 1s
-  }
+		/* USER CODE END WHILE */
+			pd12_status = gpio_d12.read();
+		/* USER CODE BEGIN 3 */
+			/*HAL_Delay(1000);  //delay 1s
+			HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_12);
+			HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_13);
+			HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_14);
+			HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_15);*/
+			
+			printf("----------------------------------------\n");
+			sample_time_us = get_us_tick();    
+			fast_loop();
+			main_loop_tick++;
+			time_available = (sample_time_us + loop_period_us) - get_us_tick();
+			printf("time available is: %lu [us]\n", time_available);
+			scheduler_run((unsigned int)time_available);
+			time_usecond = get_us_tick();
+			time_usecond -= start_time_usecond;
+			time_sec = (double)time_usecond/1000000;
+			printf ("Current tick = %lu microseconds\n", time_usecond);
+			printf ("Current tick = %lf seconds\n", time_sec);
+    }
   /* USER CODE END 3 */
 
 }
@@ -183,6 +242,35 @@ void HAL_SYSTICK_Callback(void)
   led4.runToggle();
   led5.runToggle();
   led6.runToggle();
+}
+
+void scheduler_run(unsigned int t_available) {
+    printf("In the scheduler function!\n");
+    for (int i=0; i< TASK_COUNT; i++) {
+        unsigned int dt = main_loop_tick - task_list[i].last_run;
+        printf("dt[%d] has value: %u\n", i, dt);
+        unsigned int interval_ticks = loop_rate_hz/task_list[i].task_rate_hz;
+        if (interval_ticks < 1) {
+            interval_ticks = 1;
+        }
+        if (dt < interval_ticks) {
+            continue;
+        }
+        unsigned int task_start = get_us_tick();
+        task_list[i].task_fnc();
+        task_list[i].last_run = main_loop_tick;
+        unsigned int time_taken = get_us_tick() - task_start;
+        //printf("Time taken for the task is : %u [us]\n", time_taken);
+        if (time_taken > task_list[i].max_time_micros) {
+            // the event overran!
+            printf("Scheduler overrun task\n");
+        }
+        if (time_taken >= t_available) {
+            t_available = 0;
+            break;
+        }
+        t_available -= time_taken;
+    }
 }
 unsigned long get_us_tick(void) {
     return (TIM5->CNT);
