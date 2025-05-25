@@ -1,3 +1,13 @@
+# STM32F4_Cpp_Scheduler (By ThongND)
+## Overview
+- Learn Ardupilot scheduler.
+- Project Github link: `https://github.com/dinhthong/STM32F4_Cpp_Scheduler`
+## Feature
+- STM32F407VG, C++, KEIL C.
+- 4 onboard LEDs blinking with different frequencies.
+- printf retargetted ITM for debugging. 
+
+
 # STM32Cube-Cpp-programming-example
 
  * Copyright (C) Ian Jin
@@ -36,5 +46,3 @@ STM32CubeCppExampleF4.ioc: STM32CubeMX project
 /Src/LEDcpp.cpp, /Inc/LEDcpp.hpp : C++ LED class for STM32
 
 If four LEDs on STM32 F4 Discovery board toggle respectively every 0.5,1,2,4 seconds, then we are done.
-
-# ThongND
