@@ -34,6 +34,7 @@
 #include "stm32f4xx_hal.h"
 
 /* USER CODE BEGIN Includes */
+#include <cstdio>
 #include "LEDcpp.hpp"
 /* USER CODE END Includes */
 
@@ -41,7 +42,19 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
+/* Private variables ---------------------------------------------------------*/
+#define micros() TIM5->CNT
+void Initial_System_Timer(void)
+{
+	RCC->APB1ENR |= 0x0008;	
+	TIM5->CR1 = 0x0080; 
+	TIM5->CR2 = 0x0000;
+	TIM5->CNT = 0x0000;
+	TIM5->ARR = 0xFFFFFFFF;
+	TIM5->PSC = 84 - 1;	
+	TIM5->EGR = 0x0001;
+	TIM5->CR1 |= 0x0001; 
+}
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -49,8 +62,9 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 
 /* USER CODE BEGIN PFP */
-/* Private function prototypes -----------------------------------------------*/
 
+/* Private function prototypes -----------------------------------------------*/
+unsigned long get_us_tick(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -60,6 +74,7 @@ CLed led5(GPIOD, GPIO_PIN_14, 200);
 CLed led6(GPIOD, GPIO_PIN_15, 400);
 /* USER CODE END 0 */
 uint8_t pd12_status;
+uint32_t u32_counter;
 int main(void)
 {
 
@@ -88,13 +103,11 @@ int main(void)
   while (1)
   {
   /* USER CODE END WHILE */
-pd12_status = gpio_d12.read();
+		pd12_status = gpio_d12.read();
   /* USER CODE BEGIN 3 */
-		/*HAL_Delay(1000);  //delay 1s
-	  HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_12);
-		HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_13);
-		HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_14);
-		HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_15);*/
+		u32_counter++;
+		printf("Counter value is: %d\n", u32_counter);
+		HAL_Delay(500);  //delay 1s
   }
   /* USER CODE END 3 */
 
@@ -170,6 +183,9 @@ void HAL_SYSTICK_Callback(void)
   led4.runToggle();
   led5.runToggle();
   led6.runToggle();
+}
+unsigned long get_us_tick(void) {
+    return (TIM5->CNT);
 }
 /* USER CODE END 4 */
 
