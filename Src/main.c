@@ -54,10 +54,10 @@ static void MX_GPIO_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-CLed led3(GPIOD, GPIO_PIN_13, 500);
-CLed led4(GPIOD, GPIO_PIN_12, 5000);
-CLed led5(GPIOD, GPIO_PIN_14, 2000);
-CLed led6(GPIOD, GPIO_PIN_15, 4000);
+CLed led3(GPIOD, GPIO_PIN_13, 50);
+CLed led4(GPIOD, GPIO_PIN_12, 500);
+CLed led5(GPIOD, GPIO_PIN_14, 200);
+CLed led6(GPIOD, GPIO_PIN_15, 400);
 /* USER CODE END 0 */
 uint8_t pd12_status;
 int main(void)
