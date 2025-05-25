@@ -82,7 +82,7 @@ void fast_loop(void) {
 		u32_debug_vars[4]++;
 }
 
-unsigned long get_us_tick(void);
+unsigned long AP_HAL_micro(void);
 void scheduler_run(unsigned int t_available);
 unsigned int main_loop_tick = 0, loop_rate_hz = 400;
 unsigned long time_available, sample_time_us, loop_period_us;
@@ -156,13 +156,13 @@ int main(void)
 			HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_15);*/
 			
 			printf("----------------------------------------\n");
-			sample_time_us = get_us_tick();    
+			sample_time_us = AP_HAL_micro();    
 			fast_loop();
 			main_loop_tick++;
-			time_available = (sample_time_us + loop_period_us) - get_us_tick();
+			time_available = (sample_time_us + loop_period_us) - AP_HAL_micro();
 			printf("time available is: %lu [us]\n", time_available);
 			scheduler_run((unsigned int)time_available);
-			time_usecond = get_us_tick();
+			time_usecond = AP_HAL_micro();
 			time_usecond -= start_time_usecond;
 			time_sec = (double)time_usecond/1000000;
 			printf ("Current tick = %lu microseconds\n", time_usecond);
@@ -256,10 +256,10 @@ void scheduler_run(unsigned int t_available) {
         if (dt < interval_ticks) {
             continue;
         }
-        unsigned int task_start = get_us_tick();
+        unsigned int task_start = AP_HAL_micro();
         task_list[i].task_fnc();
         task_list[i].last_run = main_loop_tick;
-        unsigned int time_taken = get_us_tick() - task_start;
+        unsigned int time_taken = AP_HAL_micro() - task_start;
         //printf("Time taken for the task is : %u [us]\n", time_taken);
         if (time_taken > task_list[i].max_time_micros) {
             // the event overran!
@@ -272,7 +272,7 @@ void scheduler_run(unsigned int t_available) {
         t_available -= time_taken;
     }
 }
-unsigned long get_us_tick(void) {
+unsigned long AP_HAL_micro(void) {
     return (TIM5->CNT);
 }
 /* USER CODE END 4 */
