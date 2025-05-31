@@ -518,6 +518,16 @@
         <Group>
           <GroupName>cpp_lib</GroupName>
         </Group>
+        <Group>
+          <GroupName>AP_HAL</GroupName>
+          <Files>
+            <File>
+              <FileName>HAL.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\AP_HAL\HAL.cpp</FilePath>
+            </File>
+          </Files>
+        </Group>
       </Groups>
     </Target>
   </Targets>
