@@ -25,7 +25,12 @@ HAL_ChibiOS::HAL_ChibiOS() :
 	
 static void main_loop()
 {
-    g_callbacks->setup();
+		/* Here in Ardupilot code.
+		   Should perform normal initialization like peripheral, drivers...
+			 Abstract the low-level code from users
+		*/
+	
+    g_callbacks->setup(); // Actually call the setup() defined in different place by user
 
 
     while (true) {

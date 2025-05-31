@@ -47,16 +47,15 @@
 /* Private variables ---------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 #define micros() TIM5->CNT
-void Initial_System_Timer(void)
-{
-	RCC->APB1ENR |= 0x0008;	
-	TIM5->CR1 = 0x0080; 
-	TIM5->CR2 = 0x0000;
-	TIM5->CNT = 0x0000;
-	TIM5->ARR = 0xFFFFFFFF;
-	TIM5->PSC = 84 - 1;	
-	TIM5->EGR = 0x0001;
-	TIM5->CR1 |= 0x0001; 
+void Initial_System_Timer(void) {
+    RCC->APB1ENR |= 0x0008;
+    TIM5->CR1 = 0x0080;
+    TIM5->CR2 = 0x0000;
+    TIM5->CNT = 0x0000;
+    TIM5->ARR = 0xFFFFFFFF;
+    TIM5->PSC = 84 - 1;
+    TIM5->EGR = 0x0001;
+    TIM5->CR1 |= 0x0001;
 }
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
@@ -157,7 +156,6 @@ void setup(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
 	
-	
   /* USER CODE BEGIN 2 */
 	Initial_System_Timer();
 	printf ("Hello world this in main.cpp setup()\n");
@@ -180,7 +178,8 @@ void loop(void) {
 
 const AP_HAL::HAL& hal = AP_HAL::get_HAL();
 
-AP_HAL::HAL::FunCallbacks callbacks(setup, loop); 
+AP_HAL::HAL::FunCallbacks callbacks(setup, loop);
+
 extern "C" {                               
 int main(int argc, char* const argv[]); 
 int main(int argc, char* const argv[]) { 
@@ -190,40 +189,37 @@ int main(int argc, char* const argv[]) {
 }
 
 /** System Clock Configuration
-*/
-void SystemClock_Config(void)
-{
+ */
+void SystemClock_Config(void) {
 
-  RCC_OscInitTypeDef RCC_OscInitStruct;
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
+    RCC_OscInitTypeDef RCC_OscInitStruct;
+    RCC_ClkInitTypeDef RCC_ClkInitStruct;
 
-  __PWR_CLK_ENABLE();
+    __PWR_CLK_ENABLE();
 
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+    __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = 16;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 12;
-  RCC_OscInitStruct.PLL.PLLN = 252;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 4;
-  HAL_RCC_OscConfig(&RCC_OscInitStruct);
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+    RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+    RCC_OscInitStruct.HSICalibrationValue = 16;
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+    RCC_OscInitStruct.PLL.PLLM = 12;
+    RCC_OscInitStruct.PLL.PLLN = 252;
+    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+    RCC_OscInitStruct.PLL.PLLQ = 4;
+    HAL_RCC_OscConfig(&RCC_OscInitStruct);
 
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_SYSCLK|RCC_CLOCKTYPE_PCLK1
-                              |RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
-  HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5);
+    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+    HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5);
 
-  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
+    HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / 1000);
 
-  HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
-
+    HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
 }
 
 /** Configure pins as 
@@ -233,32 +229,29 @@ void SystemClock_Config(void)
         * EVENT_OUT
         * EXTI
 */
-void MX_GPIO_Init(void)
-{
+void MX_GPIO_Init(void) {
 
-  GPIO_InitTypeDef GPIO_InitStruct;
+    GPIO_InitTypeDef GPIO_InitStruct;
 
-  /* GPIO Ports Clock Enable */
-  __GPIOD_CLK_ENABLE();
-  __GPIOA_CLK_ENABLE();
+    /* GPIO Ports Clock Enable */
+    __GPIOD_CLK_ENABLE();
+    __GPIOA_CLK_ENABLE();
 
-  /*Configure GPIO pins : PD12 PD13 PD14 PD15 */
-  GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
-  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
+    /*Configure GPIO pins : PD12 PD13 PD14 PD15 */
+    GPIO_InitStruct.Pin = GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
+    HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 }
 
 /* USER CODE BEGIN 4 */
 //was "__weak void HAL_SYSTICK_Callback(void)" in stm32f4xx_hal_cortex.c
-void HAL_SYSTICK_Callback(void)
-{
-  led3.runToggle();
-  led4.runToggle();
-  led5.runToggle();
-  led6.runToggle();
+void HAL_SYSTICK_Callback(void) {
+    led3.runToggle();
+    led4.runToggle();
+    led5.runToggle();
+    led6.runToggle();
 }
 
 void scheduler_run(unsigned int t_available) {
