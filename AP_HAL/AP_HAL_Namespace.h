@@ -1,5 +1,6 @@
 #pragma once
 
+#include "stm32f4xx.h"
 #include "string.h"
 #include "HAL.h"
 //#include "utility/functor.h"

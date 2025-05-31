@@ -526,6 +526,26 @@
               <FileType>8</FileType>
               <FilePath>..\AP_HAL\HAL.cpp</FilePath>
             </File>
+            <File>
+              <FileName>AP_HAL.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\AP_HAL\AP_HAL.h</FilePath>
+            </File>
+            <File>
+              <FileName>AP_HAL_Main.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\AP_HAL\AP_HAL_Main.h</FilePath>
+            </File>
+            <File>
+              <FileName>AP_HAL_Namespace.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\AP_HAL\AP_HAL_Namespace.h</FilePath>
+            </File>
+            <File>
+              <FileName>HAL.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\AP_HAL\HAL.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
