@@ -37,6 +37,8 @@
 #include <cstdio>
 #include "LEDcpp.hpp"
 #include "AP_Scheduler.h"
+#include "AP_HAL_Main.h"
+#include "AP_HAL_Namespace.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -129,10 +131,74 @@ uint8_t pd12_status;
 unsigned long time_usecond;
 unsigned long start_time_usecond;
 double time_sec;
-int main(void)
-{
+//int main(void)
+//{
 
-  /* USER CODE BEGIN 1 */
+//  /* USER CODE BEGIN 1 */
+
+//  /* USER CODE END 1 */
+
+//  /* MCU Configuration----------------------------------------------------------*/
+
+//  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+//  HAL_Init();
+
+//  /* Configure the system clock */
+//  SystemClock_Config();
+
+//  /* Initialize all configured peripherals */
+//  MX_GPIO_Init();
+//	GPIO gpio_d12(GPIO_PIN_12);
+//	
+//  /* USER CODE BEGIN 2 */
+//	Initial_System_Timer();
+//	scheduler.init(ap_tasks, sizeof(ap_tasks) / sizeof(ap_tasks), 0);
+//  /* USER CODE END 2 */
+
+//  /* Infinite loop */
+//  /* USER CODE BEGIN WHILE */
+//  while (1)
+//  {
+//		/* USER CODE END WHILE */
+//			pd12_status = gpio_d12.read();
+//		/* USER CODE BEGIN 3 */
+//			/*HAL_Delay(1000);  //delay 1s
+//			HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_12);
+//			HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_13);
+//			HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_14);
+//			HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_15);*/
+//			
+//			//printf("----------------------------------------\n");
+//			sample_time_us = AP_HAL_micro();    
+////			fast_loop();
+////			main_loop_tick++;
+////			time_available = (sample_time_us + loop_period_us) - AP_HAL_micro();
+////			printf("time available is: %lu [us]\n", time_available);
+////			scheduler_run((unsigned int)time_available);
+//				scheduler.loop();
+//			time_usecond = AP_HAL_micro();
+//			time_usecond -= start_time_usecond;
+//			time_sec = (double)time_usecond/1000000;
+//			//printf ("Current tick = %lu microseconds\n", time_usecond);
+//			//printf ("Current tick = %lf seconds\n", time_sec);
+//    }
+//  /* USER CODE END 3 */
+
+//}
+
+
+/*
+  compatibility with old pde style build
+	Ardupilot. Arduino style
+ */
+void setup(void);
+void loop(void);
+
+GPIO gpio_d12(GPIO_PIN_12);
+
+void setup(void)
+{
+   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
 
@@ -146,42 +212,29 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-	GPIO gpio_d12(GPIO_PIN_12);
+	
 	
   /* USER CODE BEGIN 2 */
 	Initial_System_Timer();
 	scheduler.init(ap_tasks, sizeof(ap_tasks) / sizeof(ap_tasks), 0);
-  /* USER CODE END 2 */
+}
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-		/* USER CODE END WHILE */
+void loop(void)
+{
+	/* USER CODE END WHILE */
 			pd12_status = gpio_d12.read();
-		/* USER CODE BEGIN 3 */
-			/*HAL_Delay(1000);  //delay 1s
-			HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_12);
-			HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_13);
-			HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_14);
-			HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_15);*/
-			
-			//printf("----------------------------------------\n");
-			sample_time_us = AP_HAL_micro();    
-//			fast_loop();
-//			main_loop_tick++;
-//			time_available = (sample_time_us + loop_period_us) - AP_HAL_micro();
-//			printf("time available is: %lu [us]\n", time_available);
-//			scheduler_run((unsigned int)time_available);
-				scheduler.loop();
-			time_usecond = AP_HAL_micro();
-			time_usecond -= start_time_usecond;
-			time_sec = (double)time_usecond/1000000;
-			//printf ("Current tick = %lu microseconds\n", time_usecond);
-			//printf ("Current tick = %lf seconds\n", time_sec);
-    }
-  /* USER CODE END 3 */
+    //schedtest.loop();
+}
 
+const AP_HAL::HAL& hal = AP_HAL::get_HAL();
+
+AP_HAL::HAL::FunCallbacks callbacks(setup, loop); 
+extern "C" {                               
+int main(int argc, char* const argv[]); 
+int main(int argc, char* const argv[]) { 
+    hal.run(argc, argv, &callbacks);
+    return 0; 
+} 
 }
 
 /** System Clock Configuration

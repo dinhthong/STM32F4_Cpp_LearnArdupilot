@@ -498,6 +498,11 @@
               <FileType>8</FileType>
               <FilePath>..\Src\AP_Scheduler.cpp</FilePath>
             </File>
+            <File>
+              <FileName>HAL_ChibiOS_Class.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Src\HAL_ChibiOS_Class.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
